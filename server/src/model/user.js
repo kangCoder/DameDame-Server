@@ -1,4 +1,5 @@
 const UserModel = require("./user.model");
+const DiaryModel = require("./diary.model");
 
 class User {
   constructor(body) {
@@ -65,11 +66,36 @@ class User {
 
   async userInfo() {
     try {
-      const respInfo = await UserModel.getUserInfo(this.body);
-      //TODO: diary에 대한 정보 추가해야 함.
-      const response = JSON.parse(JSON.stringify(respInfo));
-      console.log(response);
-      return response;
+      const respInfo = JSON.parse(
+        JSON.stringify(await UserModel.getUserInfo(this.body))
+      );
+
+      const diaryNum = JSON.parse(
+        JSON.stringify(await DiaryModel.getUserDiaryNumber(this.body.userid))
+      );
+      const diaryNum2 = [];
+      for (let i = 0; i < Object.keys(diaryNum).length; i++) {
+        diaryNum2.push(Object.values(diaryNum)[i].diaryid);
+        //console.log(Object.values(diaryNum)[i].diaryid);
+      }
+      //console.log(diaryNum2);
+      const diaryInfoArr = [];
+      for (let i = 0; i < diaryNum2.length; i++) {
+        diaryInfoArr.push(
+          JSON.parse(JSON.stringify(await DiaryModel.getMyDiarys(diaryNum2[i])))
+        );
+      }
+      //console.log(diaryInfoArr);
+
+      return {
+        status: "OK",
+        code: 200,
+        profilename: respInfo.profilename,
+        profileimage: respInfo.profileimage,
+        friendcount: respInfo.friendcount,
+        minioncount: respInfo.minioncount,
+        diary: diaryInfoArr,
+      };
     } catch (err) {
       console.error(err);
     }

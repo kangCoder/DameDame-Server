@@ -113,6 +113,17 @@ class UserModel {
     });
   }
 
+  //유저의 현재 캐릭터를 DB에서 가져오기
+  static getUserMinion(userid) {
+    return new Promise((resolve, reject) => {
+      const query = `SELECT minion FROM User WHERE userid=?`;
+      db.query(query, [userid], (err, result) => {
+        if (err) reject(err);
+        resolve(result[0]);
+      });
+    });
+  }
+
   //유저의 친구 목록을 조회하기
   static getFriendInfo(request) {
     return new Promise((resolve, reject) => {
