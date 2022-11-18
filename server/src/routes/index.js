@@ -6,7 +6,7 @@ const diaryCtrl = require("../controller/diary.controller");
 /**
  * auth
  */
-router.post("/v1/auth/login", userCtrl.post.login);
+router.put("/v1/auth/login", userCtrl.put.sociallogin);
 router.get("/v1/auth/validate/:profilename", userCtrl.get.checkname);
 router.post("/v1/auth/sign-up", userCtrl.post.register);
 
