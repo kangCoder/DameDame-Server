@@ -27,19 +27,26 @@ class User {
 
   async login() {
     try {
-      const isUser = await UserModel.getUserID(this.body.userid);
-      if (isUser.code === 200) {
-        const response = await UserModel.pushUserFCM(this.body);
-        return {
-          status: "OK",
-          code: 200,
-          jwttoken: "aaaa",
-        };
-      } else {
-        return {
-          status: "Bad Request",
-          code: 400,
-        };
+      if (this.body.platform === "kakao") {
+        const checkAccessToken = await UserModel.getAccessToken(
+          this.body.socialtoken
+        );
+        //console.log(checkAccessToken);
+        if (checkAccessToken === undefined) {
+          return {
+            status: "Created",
+            code: 201,
+            jwttoken: "asdf",
+            isnewuser: true,
+          };
+        } else {
+          return {
+            status: "OK",
+            code: 200,
+            jwttoken: "asdf",
+            isnewuser: false,
+          };
+        }
       }
     } catch (err) {
       console.error(err);
@@ -70,15 +77,15 @@ class User {
         JSON.stringify(await UserModel.getUserInfo(this.body))
       );
 
-      const diaryNum = JSON.parse(
-        JSON.stringify(await DiaryModel.getUserDiaryNumber(this.body.userid))
-      );
+      const diaryNum = await DiaryModel.getDiaryId(this.body.userid);
+      console.log(diaryNum);
       const diaryNum2 = [];
       for (let i = 0; i < Object.keys(diaryNum).length; i++) {
-        diaryNum2.push(Object.values(diaryNum)[i].diaryid);
+        //diaryNum2.push(Object.values(diaryNum)[i].diaryid);
         //console.log(Object.values(diaryNum)[i].diaryid);
       }
       //console.log(diaryNum2);
+
       const diaryInfoArr = [];
       for (let i = 0; i < diaryNum2.length; i++) {
         diaryInfoArr.push(
@@ -97,7 +104,7 @@ class User {
         diary: diaryInfoArr,
       };
     } catch (err) {
-      console.error(err);
+      //console.error(err);
     }
   }
 

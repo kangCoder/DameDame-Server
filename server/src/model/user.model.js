@@ -25,19 +25,40 @@ class UserModel {
     });
   }
 
+  //소셜로그인 시 유저가 회원가입인지 로그인인지 판별하기 위해 accesstoken 검사
+  static getAccessToken(token) {
+    return new Promise((resolve, reject) => {
+      const query = `SELECT accesstoken FROM User WHERE accesstoken=?`;
+      db.query(query, [token], (err, result) => {
+        if (err) reject(err);
+        resolve(result[0]);
+      });
+    });
+  }
+
   //회원가입 후 유저 정보를 DB에 푸시
   static pushUserInfo(request) {
     return new Promise((resolve, reject) => {
-      const query = "INSERT INTO User(profilename, profileimage) VALUES(?, ?)";
-      db.query(query, [request.profilename, request.profileimage], (err) => {
-        console.log(request);
-        if (err) reject;
-        resolve({
-          status: "Created",
-          code: 201,
-          message: "회원가입 완료",
-        });
-      });
+      const query =
+        "INSERT INTO User(profilename,profileimage,accesstoken,platform) VALUES(?,?,?,?)";
+      db.query(
+        query,
+        [
+          request.profilename,
+          request.profileimage,
+          request.accesstoken,
+          request.platform,
+        ],
+        (err) => {
+          console.log(request);
+          if (err) reject;
+          resolve({
+            status: "Created",
+            code: 201,
+            message: "회원가입 완료",
+          });
+        }
+      );
     });
   }
 

@@ -10,18 +10,7 @@ class Diary {
   async pushDiary() {
     try {
       const response = await DiaryModel.pushDiary(this.body);
-
-      const myDiaryNumber = await DiaryModel.getMaxDiary(this.body.userid);
-      const num = JSON.parse(JSON.stringify(myDiaryNumber));
-      //console.log(Object.values(num)[0]);
-      const diaryNum = parseInt(Object.values(num)[0]) + 1;
-      //console.log(diaryNum);
-      const connectUserDiary = await DiaryModel.pushUserToDiary(
-        this.body.userid,
-        diaryNum
-      );
       return response;
-      //TODO: UserToDiary와 Diary에 디폴트 값이 들어있지 않으면 연결할 수가 없음 -> 해결사항1
     } catch (err) {
       console.error(err);
     }
