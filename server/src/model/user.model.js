@@ -2,22 +2,23 @@ const db = require("../config/db");
 
 class UserModel {
   //회원가입 시 프로필이름 중복 여부 체크
-  static getMatchName(profilename) {
+  static getMatchName(nickname) {
     return new Promise((resolve, reject) => {
-      const query = "SELECT profilename FROM User WHERE profilename=?";
-      db.query(query, [profilename], (err, result) => {
+      const query = "SELECT nickname FROM User WHERE nickname=?";
+      db.query(query, [nickname], (err, result) => {
         if (resolve) {
           if (result[0] === undefined) {
             resolve({
               status: "OK",
               code: 200,
-              message: "사용가능한 이름입니다.",
+              data: [{ message: "사용 가능한 이름입니다." }],
             });
           } else {
             resolve({
-              status: "Conflict",
-              code: 409,
-              message: "중복된 이름입니다.",
+              //No Content
+              status: "No Content",
+              code: 204,
+              data: [{ message: "중복된 이름입니다." }],
             });
           }
         } else reject(err);
@@ -40,22 +41,22 @@ class UserModel {
   static pushUserInfo(request) {
     return new Promise((resolve, reject) => {
       const query =
-        "INSERT INTO User(profilename,profileimage,accesstoken,platform) VALUES(?,?,?,?)";
+        "INSERT INTO User(nickname,profileimageurl,accesstoken,platform) VALUES(?,?,?,?)";
       db.query(
         query,
         [
-          request.profilename,
-          request.profileimage,
+          request.nickname,
+          request.profileimageurl,
           request.accesstoken,
           request.platform,
         ],
         (err) => {
-          console.log(request);
-          if (err) reject;
+          //console.log(request);
+          if (err) reject(err);
           resolve({
             status: "Created",
             code: 201,
-            message: "회원가입 완료",
+            data: [{ message: "회원가입 완료" }],
           });
         }
       );

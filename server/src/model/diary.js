@@ -6,7 +6,6 @@ class Diary {
     this.body = body;
   }
 
-  //UserToDiary와 Diary에 디폴트 값이 들어가있지 않으면 불가능함.
   async pushDiary() {
     try {
       const response = await DiaryModel.pushDiary(this.body);

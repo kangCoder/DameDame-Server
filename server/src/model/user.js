@@ -36,17 +36,41 @@ class User {
           return {
             status: "Created",
             code: 201,
-            jwttoken: "asdf",
-            isnewuser: true,
+            data: [
+              {
+                jwttoken: "asdf",
+              },
+              {
+                isnewuser: false,
+              },
+              {
+                message: "신규 유저입니다.",
+              },
+            ],
           };
         } else {
           return {
             status: "OK",
             code: 200,
-            jwttoken: "asdf",
-            isnewuser: false,
+            data: [
+              {
+                jwttoken: "asdf",
+              },
+              {
+                isnewuser: false,
+              },
+              {
+                message: "기존에 가입된 유저입니다.",
+              },
+            ],
           };
         }
+      } else {
+        return {
+          status: "Not Found",
+          code: 404,
+          data: [{ message: "찾을 수 없습니다." }],
+        };
       }
     } catch (err) {
       console.error(err);
@@ -119,8 +143,23 @@ class User {
 
   async setting() {
     try {
-      const response = await UserModel.getSettingInfo(this.body);
-      return response;
+      const response = JSON.parse(
+        JSON.stringify(await UserModel.getSettingInfo(this.body))
+      );
+      console.log(response);
+      if (response !== undefined) {
+        return {
+          status: "OK",
+          code: 200,
+          data: [response, { message: "푸시 알람 정보" }],
+        };
+      } else {
+        return {
+          status: "Not Found",
+          code: 404,
+          data: [{ message: "알람 정보 못찾음" }],
+        };
+      }
     } catch (err) {
       console.error(err);
     }

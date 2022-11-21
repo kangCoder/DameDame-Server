@@ -20,7 +20,7 @@ class DiaryModel {
           resolve({
             status: "Created",
             code: 201,
-            message: "diary push 완료",
+            data: [{ message: "diary push 완료" }],
           });
         }
       );
@@ -41,7 +41,7 @@ class DiaryModel {
   //userid에 맞는 diaryid 조회하기
   static getDiaryId(userid) {
     return new Promise((reject, resolve) => {
-      const query = `SELECT diaryid FROM Diary WHERE userid=?`;
+      const query = `SELECT * FROM Diary WHERE userid=?`;
       db.query(query, [userid], (err, results) => {
         if (resolve) resolve(results);
         else reject(err);

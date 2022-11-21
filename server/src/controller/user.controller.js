@@ -3,7 +3,7 @@ const User = require("../model/user");
 const get = {
   checkname: async (req, res) => {
     //console.log(req.params.profilename);
-    const user = new User(req.params.profilename);
+    const user = new User(req.params.nickname);
     const response = await user.nameCheck();
     return res.json(response);
   },
