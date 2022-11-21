@@ -44,17 +44,17 @@ const post = {
     const response = await user.register();
     return res.json(response);
   },
-  login: async (req, res) => {
-    const user = new User(req.body);
-    const response = await user.login();
-    return res.json(response);
-  },
 };
 
 const put = {
   choiceminion: async (req, res) => {
     const user = new User(req.body);
     const response = await user.choice();
+    return res.json(response);
+  },
+  sociallogin: async (req, res) => {
+    const user = new User(req.body);
+    const response = await user.login();
     return res.json(response);
   },
 };

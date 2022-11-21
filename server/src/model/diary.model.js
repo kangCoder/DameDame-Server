@@ -4,10 +4,11 @@ class DiaryModel {
   //DB에 작성한 일기 push
   static pushDiary(request) {
     return new Promise((resolve, reject) => {
-      const query = `INSERT INTO Diary(title, content, positive, neutral, negative) VALUES(?,?,?,?,?);`;
+      const query = `INSERT INTO Diary(userid,title,content,positive,neutral,negative) VALUES(?,?,?,?,?,?);`;
       db.query(
         query,
         [
+          request.userid,
           request.title,
           request.content,
           request.positive,
@@ -37,28 +38,13 @@ class DiaryModel {
     });
   }
 
-  //User와 Diary 잇기
-  static pushUserToDiary(userid, diaryid) {
-    return new Promise((resolve, reject) => {
-      const query = `INSERT INTO UserToDiary(userid, diaryid) VALUES(?,?)`;
-      db.query(query, [userid, diaryid], (err) => {
-        if (err) reject(err);
-        resolve({
-          status: "Created",
-          code: "201",
-          message: "user to diary connected",
-        });
-      });
-    });
-  }
-
-  //유저가 쓴 다이어리 번호 가져오기
-  static getUserDiaryNumber(userid) {
-    return new Promise((resolve, reject) => {
-      const query = `SELECT diaryid FROM UserToDiary WHERE userid=?`;
+  //userid에 맞는 diaryid 조회하기
+  static getDiaryId(userid) {
+    return new Promise((reject, resolve) => {
+      const query = `SELECT diaryid FROM Diary WHERE userid=?`;
       db.query(query, [userid], (err, results) => {
-        if (err) reject(err);
-        resolve(results);
+        if (resolve) resolve(results);
+        else reject(err);
       });
     });
   }
